@@ -5,18 +5,16 @@ heritage: {{ .Release.Service | quote }}
 chart:  {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 {{- end }}
 
-{{- $adminUser := default (randAlphaNum 16) .Values.kafkaAdminUser -}}
-{{- $adminPassword := default (randAlphaNum 16) .Values.kafkaAdminPassword -}}
-{{- $clientUser := default (randAlphaNum 16) .Values.kafkaClientUser -}}
-{{- $clientPassword := default (randAlphaNum 16) .Values.kafkaClientPassword -}}
 {{ $adminUser := default (randAlphaNum 16) .Values.adminUser }}
 {{ $adminPassword := default (randAlphaNum 16) .Values.adminPassword }}
 {{ $clientUser := default (randAlphaNum 16) .Values.clientUser }}
 {{ $clientPassword := default (randAlphaNum 16) .Values.clientPassword }}
+
 {{- $usernamePool := dict }}
 {{- range $i, $e := until (default 50 (int .Values.usernamePoolSize)) }}
 {{- $_ := set $usernamePool (randAlphaNum 16) (randAlphaNum 16) }}
 {{- end }}
+
 apiVersion: v1
 kind: Secret
 metadata:

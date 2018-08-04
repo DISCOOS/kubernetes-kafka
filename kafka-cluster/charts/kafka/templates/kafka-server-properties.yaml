@@ -19,6 +19,16 @@ data:
     # Switch to enable topic deletion or not, default value is flase
     delete.topic.enable={{ default "false" .Values.deleteTopicEnable}}
 
+    # Ensure number of nodes and offets are valid
+    offsets.topic.replication.factor={{ min .Values.nodes (default 3 .Values.offsetsTopicReplicationFactor) }}
+
+    # Ensure number of nodes and transaction log state are valid
+    transaction.state.log.min.isr={{ min .Values.nodes (default 2 .Values.transactionStateLogMinIsr) }}
+    transaction.state.log.replication.factor={{ min .Values.nodes (default 3 .Values.transactionStateLogReplicationFactor) }}
+
+    # Set durability level
+    min.insync.replicas={{ min .Values.nodes (default 1 .Values.minInsyncReplicas) }}
+
     # Rebalance leaders if needed 
     auto.leader.rebalance.enable=true
 
@@ -26,6 +36,9 @@ data:
 
     # A comma seperated list of directories under which to store log files
     log.dirs=/opt/kafka/data/topics
+
+    # The total memory used for log deduplication across all cleaner threads
+    log.cleaner.dedupe.buffer.size={{ default 134217728 .Values.logCleanerDedupeBufferSize | int64 }}
 
     ############################# Zookeeper #############################
 

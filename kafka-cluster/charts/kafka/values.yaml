@@ -10,8 +10,22 @@ headlessService: broker
 serverName: kafka
 ## kafka.nodes is set to number of nodes in kafka cluster
 nodes: 3
-## kafka.jvmFlags are default java options to use with kafka
-jvmFlags: -Xmx1G
+## The replication factor for the offsets, set higher to ensure availability (default 3). 
+## Internal topic creation will fail until the cluster size meets this replication factor requirement (must be equal or less than nodes).
+offsetsTopicReplicationFactor: 3
+## The replication factor for the transaction topic, set higher to ensure availability (default is 3). 
+## Internal topic creation will fail until the cluster size meets this replication factor requirement (must be equal or less than nodes).
+transactionStateLogReplicationFactor: 3
+## When a producer sets acks to "all" (or "-1"), min.insync.replicas specifies the minimum number of replicas that must acknowledge a write 
+## for the write to be considered successful. If this minimum cannot be met, then the producer will raise an exception 
+## (either NotEnoughReplicas or NotEnoughReplicasAfterAppend). When used together, min.insync.replicas and acks allow you to enforce greater 
+## durability guarantees. A typical scenario would be to create a topic with a replication factor of 3, set min.insync.replicas to 2, and 
+## produce with acks of "all". This will ensure that the producer raises an exception if a majority of replicas do not receive a write.
+minInsyncReplicas: 1 
+## Overridden min.insync.replicas config for the transaction topic (default is 2). Must be equal or less than nodes.
+transactionStateLogMinIsr: 2
+## kafka.jvmFlags are default java options to use with kafka, can be as low as -Xmx32M -Xms32M for systems with limited resources and low throughput
+jvmFlags: -Xmx1G -Xms1G
 ## kafka.storageSize is the default size of storage when using persistent volumes
 storageSize: 2GiB
 ## kafka.persistent is set to true to use persitent volumes
@@ -22,15 +36,17 @@ secured: true
 # tls: false
 # Set to true if topics can be deleted.
 deleteTopicEnable: false
-# Then name of the admin user. If not specified a random name is generated.
+## The total memory used for log deduplication across all cleaner threads (134MB is default), can be as low as 12000000 (12Mb) for systems with limited resources and low throughput
+logCleanerDedupeBufferSize: 134217728
+## Then name of the admin user. If not specified a random name is generated.
 #adminUser: admin
-# Then name of the admin password. If not specified a random password is generated.
+## Then name of the admin password. If not specified a random password is generated.
 #adminPassword: secret-password
-# Then name of the client user. If not specified a random name is generated.
+## Then name of the client user. If not specified a random name is generated.
 #clientUser: client
-# Then name of the client password. If not specified a random password is generated.
+## Then name of the client password. If not specified a random password is generated.
 #clientPassword: secret-password
-# Default timeout in ms when connecting to zookeeper
+## Default timeout in ms when connecting to zookeeper
 zookeperTimeout: 6000
 ## kafka.nodeSelector can be set with node labels to use when choosing nodes to deploy
 nodeSelector:

@@ -8,7 +8,7 @@ serviceName: zookeeper
 headlessService: zoo
 ## zookeeper.nodes is set to number of nodes in zookeeper cluster
 nodes: 3 
-## zookeeper.jvmFlags are default java options to use with kafka
+## zookeeper.jvmFlags are default java options to use with zookeeper, can be as low as -Xmx4M -Xms4M for systems with limited resources and low throughput
 jvmFlags: -Xmx512m
 ## zookeeper.nodeSelector can be set with node labels to use when choosing nodes to deploy
 nodeSelector:     
